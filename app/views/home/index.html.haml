@@ -1,4 +1,6 @@
-%h3 Home
-- @users.each do |user|
-  %p
-    User: #{link_to user.name, user}
+%h3 Scribble on your Friends' Facebook Cover Photos!
+%ul.providers
+  %li
+    %a{ :href => "/auth/facebook", :class => "btn btn-facebook" }
+      %i.icon-facebook-sign.pull-left
+      %span Sign in with Facebook

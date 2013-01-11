@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/jkao/font-awesome-rails.git
+  revision: 55b88a90366c42f302b454fac4330f0fc9fe4b7b
+  specs:
+    font-awesome-rails (0.2.1)
+      railties (~> 3.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -157,6 +164,7 @@ DEPENDENCIES
   bootstrap-sass (>= 2.2.2.0)
   coffee-rails (~> 3.2.1)
   figaro (>= 0.5.0)
+  font-awesome-rails!
   haml (>= 3.1.7)
   haml-rails (>= 0.3.5)
   hpricot (>= 0.8.6)
