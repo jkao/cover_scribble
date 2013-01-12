@@ -55,6 +55,9 @@ app.initialize_tool_prefs = function() {
       app.context.clearRect(
         0, 0, app.canvas.width, app.canvas.height
       );
+      app.bottom_context.clearRect(
+        0, 0, app.canvas.width, app.canvas.height
+      );
     }
   });
 
@@ -178,7 +181,8 @@ app.initialize_facebook_friends_dialog = function() {
         // Do a GET on that user's canvas photos
         $.get(app.COVER_PHOTO_QUERY, params,
               function(response) {
-                app.setup_user_canvas(response);
+                window.location.href = "/cover_photos?uid=" + selected_friend;
+                //app.setup_user_canvas(response);
               }).error(function() { 
                 // Offer an invite if they don't have the app
                 if (confirm("Looks like your friend hasn't added the app yet. Invite them?")) {
@@ -194,6 +198,7 @@ app.initialize_facebook_friends_dialog = function() {
 }
 
 app.setup_user_canvas = function(json_response) {
+  // TODO: Just do a redirect -_-
   console.log("json_response");
   console.log(json_response);
 }

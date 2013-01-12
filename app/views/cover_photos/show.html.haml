@@ -7,17 +7,19 @@
     %canvas.canvas-layer#bottom-canvas{ :width => "851", :height => "315" }
     %canvas.canvas-layer#cover-photo{ :width => "851", :height => "315" }
   #tools
+    .span6
+      %input#color-picker{ :type => 'text' }
 
-    #size-picker-wrapper
-      #size
-        Size: 5
-      #size-picker
+      %button#clear-canvas.btn.fb-color{ :type => "button" } Clear Canvas
 
-    %button#clear-canvas.btn.fb-color{ :type => "button" } Clear Canvas
+      %a#save.btn.fb-color{ :href => "#", :role => "button" } Save
 
-    %a#save.btn.fb-color{ :href => "#", :role => "button" } Save
+      #size-picker-wrapper
+        #size
+          Size: 5
+        #size-picker
 
-    %input#color-picker{ :type => 'text' }
+    .span6
 
     #facebook-friend-dialog
 
