@@ -77,7 +77,7 @@ class CoverPhotosController < ApplicationController
 
     photo_url = "#{PHOTO_URL}#{@user.uid}"
 
-    if user_id != drawer_id
+    if @user_id != @drawer_id
       # Upload the image from imgur
       @me = FbGraph::User.new('me',
                               :access_token => @access_token)
@@ -97,7 +97,6 @@ class CoverPhotosController < ApplicationController
         :href => photo_url,
         :template => "Your friend #{@drawer.name} drew on your cover photo!"
       )
-
 
       successful_return = {}
     end
