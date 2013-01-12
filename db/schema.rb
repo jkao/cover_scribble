@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130112093344) do
+ActiveRecord::Schema.define(:version => 20130112122039) do
 
   create_table "cover_photos", :force => true do |t|
     t.string   "url"
@@ -21,11 +21,11 @@ ActiveRecord::Schema.define(:version => 20130112093344) do
   end
 
   create_table "user_cover_photos", :force => true do |t|
-    t.string   "user_id"
-    t.string   "cover_photo_id"
-    t.string   "drawer_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.integer  "user_id",        :limit => 255
+    t.integer  "cover_photo_id", :limit => 255
+    t.integer  "drawer_id",      :limit => 255
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   create_table "users", :force => true do |t|
