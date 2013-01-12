@@ -74,14 +74,13 @@ class CoverPhotosController < ApplicationController
     end
 
     # Upload the image from imgur
-    @me = FbGraph::User.new('me',
-                            :access_token => @access_token)
-    photo = @me.photo!(:url => @image_url)
-                       #:message => "Want to join the Scribble fun? [GO TO THIS URL]" )
-                       # TODO: Re-enable above line ^
-
-    logger.info "WOOT"
-    logger.info photo.inspect
+    if @drawer_id == @user_id
+      @me = FbGraph::User.new('me',
+                              :access_token => @access_token)
+      photo = @me.photo!(:url => @image_url)
+                         #:message => "Want to join the Scribble fun? [GO TO THIS URL]" )
+                         # TODO: Re-enable above line ^
+    end
 
     # Send out a success response
     successful_return = {

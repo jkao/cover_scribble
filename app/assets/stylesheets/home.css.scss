@@ -2,6 +2,11 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+ul.providers {
+  list-style: none;
+  text-align: center;
+}
+
 /* Custom Buttons */
 .btn-facebook {
   min-width: 200px;
@@ -20,8 +25,4 @@
   color: #fff !important;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.26);
   -webkit-font-smoothing: antialiased;
-
-  i.icon-facebook-sign {
-    font-size: 20px;
-  }
 }

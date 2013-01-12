@@ -55,8 +55,11 @@ app.initialize_tool_prefs = function() {
       app.context.clearRect(
         0, 0, app.canvas.width, app.canvas.height
       );
-      app.bottom_context.clearRect(
-        0, 0, app.canvas.width, app.canvas.height
+
+      app.bottom_context.strokeStyle = "#ffffff";
+      app.bottom_context.fillStyle = "#ffffff";
+      app.bottom_context.fillRect(
+        0, 0, app.bottom_canvas.width, app.bottom_canvas.height
       );
     }
   });
