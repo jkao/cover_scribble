@@ -1,0 +1,15 @@
+
+#cover-scribble-wrapper
+  #cover-photo-wrapper
+    #profile-photo-wrapper
+      %a#profile-photo-link{ :href => "#" }
+        %img#profile-photo{ :src => @profile_picture_url }
+    %canvas.canvas-layer#bottom-canvas{ :width => "851", :height => "315" }
+    %canvas.canvas-layer#cover-photo{ :width => "851", :height => "315" }
+  #tools
+    = @profile_picture_url
+    TODO: Insert cool shit
+    = @fb_app_id
+
+= render :partial => "layouts/fb"
+= render :partial => "layouts/user"

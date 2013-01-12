@@ -1,11 +1,8 @@
 class HomeController < ApplicationController
-  before_filter :authenticate_user!, :except => [:index]
+  before_filter :authenticate_user!, :only => [:app]
 
   def index
-    @users = User.all
+    redirect_to app_path(:user_uid => current_user.uid) if user_signed_in?
   end
 
-  def app
-
-  end
 end

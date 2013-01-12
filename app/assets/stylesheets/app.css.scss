@@ -1,0 +1,65 @@
+html {
+  background-color: #F5F5F5;
+}
+
+body {
+  background-color: #F5F5F5 !important;
+}
+
+#cover-scribble-wrapper {
+  padding: 0 15px;
+}
+
+#cover-photo-wrapper {
+  background-color: #C9C9C9;
+  margin: 10px auto;
+  position: absolute;
+  padding: 0 5px;
+}
+
+.canvas-layer {
+  margin: 10px auto;
+  cursor: crosshair;
+  position: absolute;
+
+  border: 1px solid #BABABA;
+}
+
+#cover-photo {
+  z-index: 2;
+}
+
+#profile-photo-wrapper {
+  position: absolute;
+  z-index: 5;
+  background-color: white;
+  left: 25px;
+  top: 170px;
+
+  height: 172px;
+  width: 172px;
+
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #BABABA;
+}
+
+#profile-photo {
+  width: 168px;
+  height: 168px;
+
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 2px solid white;
+}
+
+#tools {
+  position: absolute;
+  top: 425px;
+}
+
+#tmp-canvas {
+  z-index: 4;
+}

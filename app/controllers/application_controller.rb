@@ -4,6 +4,12 @@ class ApplicationController < ActionController::Base
   helper_method :user_signed_in?
   helper_method :correct_user?
 
+  before_filter :set_fb_params
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
+
   private
     def current_user
       begin
@@ -28,6 +34,14 @@ class ApplicationController < ActionController::Base
       if !current_user
         redirect_to root_url, :alert => 'You need to sign in for access to this page.'
       end
+    end
+
+    def profile_picture_url(uid)
+      "https://graph.facebook.com/#{uid}/picture?type=large"
+    end
+
+    def set_fb_params
+      @fb_app_id = ENV['OMNIAUTH_PROVIDER_KEY']
     end
 
 end
