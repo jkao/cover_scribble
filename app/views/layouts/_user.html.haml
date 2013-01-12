@@ -1,2 +1,7 @@
-#user-info{ :"data-uid" => "#{current_user.uid}",
-            :"data-name" => "#{current_user.name}" }
+#user-info{ :"data-id" => "#{@user.id}",
+            :"data-uid" => "#{@user.uid}",
+            :"data-name" => "#{@user.name}" }
+
+#drawer-info{ :"data-id" => "#{current_user.id}",
+              :"data-uid" => "#{current_user.uid}",
+              :"data-name" => "#{current_user.name}" }

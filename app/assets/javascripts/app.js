@@ -1,11 +1,14 @@
 var app = app || {}
 
+app.COVER_PHOTO_CREATE_URL = "/cover_photos"
+app.COVER_PHOTO_SET_URL = "http://www.facebook.com/profile.php?preview_cover="
+
 app.default_brush_settings = {
 	lineWidth : 5,
 	lineJoin : 'round',
 	lineCap : 'round',
-	strokeStyle : 'blue',
-	fillStyle : 'blue'
+	strokeStyle : 'black',
+	fillStyle : 'black'
 }
 
 app.initialize_handlers = function() {
@@ -41,10 +44,16 @@ app.initialize_handlers = function() {
 
 app.initialize = function() {
 
-  // Set up the user
+  // Set up the user and drawer
   app.user = {
     uid : $("#user-info").data("uid"),
-    name : $("#user-info").data("name")
+    name : $("#user-info").data("name"),
+    id : $("#user-info").data("id")
+  };
+  app.drawer = {
+    uid : $("#drawer-info").data("uid"),
+    name : $("#drawer-info").data("name"),
+    id : $("#drawer-info").data("id")
   };
 
   // Canvas
@@ -108,6 +117,22 @@ app.initialize = function() {
 
   // Mouse Event Handlers
   app.initialize_handlers();
+
+  // Initialize Color Picker
+  $("#color-picker").spectrum({
+    flat: true,
+    change: app.color_change_handler,
+    move: app.color_change_handler
+  });
+}
+
+app.color_change_handler = function(color_obj) {
+  console.log("color");
+  console.log(color_obj);
+  console.log(color_obj.toHexString());
+
+  app.context.strokeStyle = color_obj.toHexString();
+  app.context.fillStyle = color_obj.toHexString();
 }
 
 // Merge the drawing layer to the original image
@@ -146,7 +171,37 @@ app.upload = function() {
   }).success(function(data) {
     console.log("SUCCESS");
     console.log(data);
-    // TODO: Upload that shit to rails backend
+
+    // Upload to rails backend
+    image_url = data['upload']['links']['original'];
+    access_token = FB.getAccessToken();
+
+    post_params = {
+      access_token : access_token,
+      image_url : image_url,
+      user_id : app.user["id"]
+    }
+
+    $.post(app.COVER_PHOTO_CREATE_URL, post_params, function(response) {
+      console.log(response);
+
+      // Check success
+      if (response.errors) {
+        alert("An error occured... Make sure you have Facebook permissions enabled! :(");
+      } else {
+        // if the person that drew on the image owns the cover,
+        // request them to upload it to facebook
+        if (app.user.id == app.drawer.id) {
+          fb_id = response.facebook_identifier
+          console.log(app.COVER_PHOTO_SET_URL + fb_id);
+          alert("WOOT");
+        }
+      }
+    }).error(function() {
+      alert("An error occurred :(");
+    });
+
+
 
   }).error(function() {
     console.log("ERROR");
@@ -158,5 +213,8 @@ app.upload = function() {
 }
 
 $(document).ready(function() {
-  app.initialize();
+  // only run this if we are on the app page
+  if ($("#cover-photo").length > 0) {
+    app.initialize();
+  }
 });
