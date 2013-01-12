@@ -184,7 +184,7 @@ app.initialize_facebook_friends_dialog = function() {
         // Do a GET on that user's canvas photos
         $.get(app.COVER_PHOTO_QUERY, params,
               function(response) {
-                window.location.href = "/cover_photos?uid=" + selected_friend;
+                window.location.href = "/cover_photos?user_uid=" + selected_friend;
                 //app.setup_user_canvas(response);
               }).error(function() { 
                 // Offer an invite if they don't have the app
