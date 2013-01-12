@@ -82,7 +82,7 @@ class CoverPhotosController < ApplicationController
       @me = FbGraph::User.new('me',
                               :access_token => @access_token)
       photo = @me.photo!(:url => @image_url,
-                         :msg => "Write on my cover photo at #{photo_url}" )
+                         :message => "Write on my cover photo at #{photo_url}" )
 
       # Send out a success response
       successful_return = {
