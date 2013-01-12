@@ -1,7 +1,7 @@
 class CoverPhotosController < ApplicationController
   before_filter :authenticate_user!
 
-  PHOTO_URL = "http://limitless-tundra-7937.herokuapp.com/cover_photos?user_id="
+  PHOTO_URL = "http://limitless-tundra-7937.herokuapp.com/cover_photos?user_uid="
 
   def show
     @user = User.find_by_uid(params[:user_uid]) || not_found
