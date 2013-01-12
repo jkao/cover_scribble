@@ -7,10 +7,19 @@
     %canvas.canvas-layer#bottom-canvas{ :width => "851", :height => "315" }
     %canvas.canvas-layer#cover-photo{ :width => "851", :height => "315" }
   #tools
+
+    #size-picker-wrapper
+      #size
+        Size: 5
+      #size-picker
+
+    %button#clear-canvas.btn.fb-color{ :type => "button" } Clear Canvas
+
+    %a#save.btn.fb-color{ :href => "#", :role => "button" } Save
+
     %input#color-picker{ :type => 'text' }
-    = @profile_picture_url
-    TODO: Insert cool shit
-    = @fb_app_id
 
 = render :partial => "layouts/fb"
 = render :partial => "layouts/user"
+= render :partial => "cover_photos/upload"
+= render :partial => "cover_photos/initial"

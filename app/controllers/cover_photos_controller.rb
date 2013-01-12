@@ -1,15 +1,21 @@
 class CoverPhotosController < ApplicationController
   before_filter :authenticate_user!
 
-  # TODO: Implement security to check for friends
   def show
     @user = User.find_by_uid(params[:user_uid]) || not_found
     @profile_picture_url = profile_picture_url(@user.uid)
+    @cover_photo = \
+      CoverPhoto.joins(:user_cover_photo) \
+                .where(:user_cover_photos => { :user_id => 1 }) \
+                .order("created_at DESC").first
+
+    # TODO: Implement JSON and HTML version
   end
 
   def create
     @access_token = params[:access_token]
     @image_url = params[:image_url]
+    @image_code = params[:image_code]
     @drawer_id = current_user.id
     @user_id = params[:user_id]
 
@@ -28,6 +34,7 @@ class CoverPhotosController < ApplicationController
       # create the cover photo
       @cover_photo = CoverPhoto.new
       @cover_photo.url = @image_url
+      @cover_photo.img_code = @image_code
       unless @cover_photo.save
         render(:json => @cover_photo.errors) and return
       end

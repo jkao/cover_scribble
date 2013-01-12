@@ -3,6 +3,8 @@ var app = app || {}
 app.COVER_PHOTO_CREATE_URL = "/cover_photos"
 app.COVER_PHOTO_SET_URL = "http://www.facebook.com/profile.php?preview_cover="
 
+app.BASE_64_DATE_PREFIX = "data:image/png;base64,"
+
 app.default_brush_settings = {
 	lineWidth : 5,
 	lineJoin : 'round',
@@ -42,6 +44,41 @@ app.initialize_handlers = function() {
 
 }
 
+app.initialize_tool_prefs = function() {
+  // Canvas Clear Button
+  $("#clear-canvas").click(function(e) {
+    confirm_msg = "Are you sure you want to clear the canvas?";
+
+    if (confirm(confirm_msg)) {
+      app.context.clearRect(
+        0, 0, app.canvas.width, app.canvas.height
+      );
+    }
+  });
+
+  // Save Button
+  $("#save").click(function(e) {
+    e.preventDefault();
+    app.upload();
+  });
+
+  // Size Toggle
+  $("#size-picker").slider({
+    range : "max",
+    min : 3,
+    max : 50,
+    value: 5,
+    slide : function(event, ui) {
+      console.log("ui.value");
+      console.log(ui.value);
+      $("#size").text("Size: " + ui.value);
+
+      // Change the context stroke size
+      app.context.lineWidth = ui.value;
+    }
+  });
+}
+
 app.initialize = function() {
 
   // Set up the user and drawer
@@ -78,8 +115,21 @@ app.initialize = function() {
     0, 0, app.bottom_canvas.width, app.bottom_canvas.height
   );
 
-  // TODO: Set it to image if there is (via server)
+  // Set it to image if there is (via server)
   // Otherwise clear it
+  if ($("#initial-cover").data("code")) {
+    var img = new Image;
+    img.src = app.BASE_64_DATE_PREFIX + $("#initial-cover").data("code")
+
+    // TODO: Show loading dialog
+
+    // Set event handler when image loads
+    img.onload = function() {
+      app.bottom_context.drawImage(img, 0, 0);
+    };
+  } else {
+    // No previous image, leave it cleared
+  }
 
   /*
   // Temporary Canvas
@@ -124,6 +174,14 @@ app.initialize = function() {
     change: app.color_change_handler,
     move: app.color_change_handler
   });
+
+  // Initialize Tool Preference Setters
+  app.initialize_tool_prefs();
+
+  // Initialize the Canvas if User had Previous Drawings
+  var old_url = $("")
+
+
 }
 
 app.color_change_handler = function(color_obj) {
@@ -173,12 +231,13 @@ app.upload = function() {
     console.log(data);
 
     // Upload to rails backend
-    image_url = data['upload']['links']['original'];
-    access_token = FB.getAccessToken();
+    var image_url = data['upload']['links']['original'];
+    var access_token = FB.getAccessToken();
 
-    post_params = {
+    var post_params = {
       access_token : access_token,
       image_url : image_url,
+      image_code : img,
       user_id : app.user["id"]
     }
 
@@ -192,9 +251,14 @@ app.upload = function() {
         // if the person that drew on the image owns the cover,
         // request them to upload it to facebook
         if (app.user.id == app.drawer.id) {
-          fb_id = response.facebook_identifier
-          console.log(app.COVER_PHOTO_SET_URL + fb_id);
-          alert("WOOT");
+          var fb_id = response.facebook_identifier
+          var fb_url = app.COVER_PHOTO_SET_URL + fb_id;
+
+          console.log(fb_url);
+
+          // Display the modal to synch on Facebook
+          $("#use-on-facebook").attr("href", fb_url);
+          $("#upload-dialog").modal('show');
         }
       }
     }).error(function() {

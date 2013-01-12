@@ -1,0 +1,17 @@
+#upload-dialog.modal.hide.fade
+  .modal-header
+    %button.close{ :type => "button",
+                   :"data-dismiss" => "modal",
+                   :"aria-hidden" => "true" } x
+    %h3 Cover Photo
+    .modal-body
+      #uploading-area
+        Click the button below to use this as your cover photo.
+      %hr
+      .center
+        %a#use-on-facebook{ :href => "#", :class => "btn btn-facebook" }
+          %i.icon-facebook-sign.pull-left
+          %span Use on Facebook
+      %hr
+    .modal-footer
+      %button.btn{ :"data-dismiss" => "modal" } Close

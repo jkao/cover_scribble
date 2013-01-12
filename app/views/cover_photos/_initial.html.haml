@@ -1,0 +1,4 @@
+- if @cover_photo
+  #initial-cover{ :"data-url" => @cover_photo.url, :"data-code" => @cover_photo.img_code }
+- else
+  #initial-cover{ :"data-url" => nil, :"data-code" => nil }
