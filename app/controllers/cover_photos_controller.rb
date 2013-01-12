@@ -1,6 +1,8 @@
 class CoverPhotosController < ApplicationController
   before_filter :authenticate_user!
 
+  PHOTO_URL = "http://limitless-tundra-7937.herokuapp.com/cover_photos?user_id="
+
   def show
     @user = User.find_by_uid(params[:user_uid]) || not_found
     @profile_picture_url = profile_picture_url(@user.uid)
@@ -73,15 +75,32 @@ class CoverPhotosController < ApplicationController
       end
     end
 
-    # Upload the image from imgur
-    @me = FbGraph::User.new('me',
-                            :access_token => @access_token)
-    photo = @me.photo!(:url => @image_url)
+    photo_url = "#{PHOTO_URL}#{@user.uid}"
 
-    # Send out a success response
-    successful_return = {
-      :facebook_identifier => photo.identifier
-    }
+    if user_id != drawer_id
+      # Upload the image from imgur
+      @me = FbGraph::User.new('me',
+                              :access_token => @access_token)
+      photo = @me.photo!(:url => @image_url,
+                         :msg => "Write on my cover photo at #{photo_url}" )
+
+      # Send out a success response
+      successful_return = {
+        :facebook_identifier => photo.identifier
+      }
+    else
+      @fb_user = FbGraph::User.new(@user.uid,
+                                   :access_token => @access_token)
+
+      user.notification!(
+        :access_token => APP_ACCESS_TOKEN,
+        :href => photo_url,
+        :template => "Your friend #{@drawer.name} drew on your cover photo!"
+      )
+
+
+      successful_return = {}
+    end
 
     render(:json => successful_return)
   end
