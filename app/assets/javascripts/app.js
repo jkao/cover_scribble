@@ -3,6 +3,8 @@ var app = app || {}
 app.COVER_PHOTO_CREATE_URL = "/cover_photos"
 app.COVER_PHOTO_SET_URL = "http://www.facebook.com/profile.php?preview_cover="
 
+app.COVER_PHOTO_QUERY = "/cover_photos.json"
+
 app.BASE_64_DATE_PREFIX = "data:image/png;base64,"
 
 app.default_brush_settings = {
@@ -119,44 +121,18 @@ app.initialize = function() {
   // Otherwise clear it
   if ($("#initial-cover").data("code")) {
     var img = new Image;
-    img.src = app.BASE_64_DATE_PREFIX + $("#initial-cover").data("code")
+    img.src = app.BASE_64_DATE_PREFIX + $("#initial-cover").data("code");
 
-    // TODO: Show loading dialog
+    $.blockUI();
 
     // Set event handler when image loads
     img.onload = function() {
       app.bottom_context.drawImage(img, 0, 0);
+      $.unblockUI();
     };
   } else {
     // No previous image, leave it cleared
   }
-
-  /*
-  // Temporary Canvas
-  app.tmp_canvas = document.createElement('canvas');
-  app.tmp_context = app.tmp_canvas.getContext("2d");
-
-  console.log("app.context");
-  console.log(app.context);
-  console.log("app.tmp_context");
-  console.log(app.tmp_context);
-
-  // Set up the Temp Canvas
-  app.tmp_canvas.id = "tmp-canvas";
-  app.tmp_canvas.classList.add("canvas-layer");
-  app.tmp_canvas.width = app.canvas.width;
-  app.tmp_canvas.height = app.canvas.height;
-
-  // Set up the Temp Context
-  app.tmp_context.lineWidth = app.default_brush_settings["lineWidth"];
-  app.tmp_context.lineJoin = app.default_brush_settings["lineJoin"];
-  app.tmp_context.lineCap = app.default_brush_settings["lineCap"];
-  app.tmp_context.strokeStyle = app.default_brush_settings["strokeStyle"];
-  app.tmp_context.fillStyle = app.default_brush_settings["fillStyle"];
-  */
-
-  // Add the Temp Canvas on There
-  //$("#cover-photo-wrapper").append(app.tmp_canvas);
 
   // Mouse
   app.mouse = {x:0, y:0};
@@ -170,7 +146,8 @@ app.initialize = function() {
 
   // Initialize Color Picker
   $("#color-picker").spectrum({
-    flat: true,
+    flat: false,
+    clickoutFiresChange: true,
     change: app.color_change_handler,
     move: app.color_change_handler
   });
@@ -178,10 +155,47 @@ app.initialize = function() {
   // Initialize Tool Preference Setters
   app.initialize_tool_prefs();
 
-  // Initialize the Canvas if User had Previous Drawings
-  var old_url = $("")
+  // Initialize FB Dialog
+  app.initialize_facebook_friends_dialog();
 
+}
 
+// Initialize friends dialog
+app.initialize_facebook_friends_dialog = function() {
+  $("#profile-photo-link").fSelector({
+    max: 1,
+    lang: {
+      buttonSubmit: "Select"
+    },
+    closeOnSubmit: true,
+    onSubmit: function(response){
+      if (response.length > 0) {
+        var selected_friend = response[0];
+        var params = {
+          "user_uid" : selected_friend
+        }
+
+        // Do a GET on that user's canvas photos
+        $.get(app.COVER_PHOTO_QUERY, params,
+              function(response) {
+                app.setup_user_canvas(response);
+              }).error(function() { 
+                // Offer an invite if they don't have the app
+                if (confirm("Looks like your friend hasn't added the app yet. Invite them?")) {
+                   FB.ui({
+                       method: 'apprequests',
+                       message: 'Hey! Join in on the fun with Canvas Scribble!'
+                   });
+                }
+              });
+      }
+    }
+  });
+}
+
+app.setup_user_canvas = function(json_response) {
+  console.log("json_response");
+  console.log(json_response);
 }
 
 app.color_change_handler = function(color_obj) {
@@ -199,6 +213,8 @@ app.merge_to_one_image = function() {
 }
 
 app.upload = function() {
+  $.blockUI();
+
   // Merge the layers to one picture
   app.merge_to_one_image();
 
@@ -207,9 +223,6 @@ app.upload = function() {
   } catch(e) {
     var img = app.bottom_canvas.toDataURL().split(',')[1];
   }
-
-  console.log("img");
-  console.log(img);
 
   // open the popup in the click handler so it will not be blocked
 
@@ -227,9 +240,6 @@ app.upload = function() {
     },
     dataType: 'json'
   }).success(function(data) {
-    console.log("SUCCESS");
-    console.log(data);
-
     // Upload to rails backend
     var image_url = data['upload']['links']['original'];
     var access_token = FB.getAccessToken();
@@ -242,7 +252,7 @@ app.upload = function() {
     }
 
     $.post(app.COVER_PHOTO_CREATE_URL, post_params, function(response) {
-      console.log(response);
+      $.unblockUI();
 
       // Check success
       if (response.errors) {
@@ -262,16 +272,16 @@ app.upload = function() {
         }
       }
     }).error(function() {
+      $.unblockUI();
       alert("An error occurred :(");
     });
 
 
 
   }).error(function() {
-    console.log("ERROR");
+    $.unblockUI();
     alert('Could not reach api.imgur.com. Sorry :(');
   });
-
 
 
 }

@@ -9,7 +9,31 @@ class CoverPhotosController < ApplicationController
                 .where(:user_cover_photos => { :user_id => 1 }) \
                 .order("created_at DESC").first
 
-    # TODO: Implement JSON and HTML version
+    respond_to do |format|
+      format.html
+      format.json {
+        if @cover_photo
+          cover_photo_json = {
+            "url" => @cover_photo.url,
+            "img_code" => @cover_photo.img_code
+          }
+        else
+          cover_photo_json = nil
+        end
+
+        json = {
+          "user" => {
+            "name" => @user.name,
+            "uid" => @user.uid,
+            "id" => @user.id
+          },
+          "profile_picture_url" => @profile_picture_url,
+          "cover_photo" => cover_photo_json
+        }
+
+        render :json => json
+      }
+    end
   end
 
   def create
